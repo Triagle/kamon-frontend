@@ -16,6 +16,12 @@ export enum Colour {
   BLANK = '#000000'
 }
 
+export enum Selection {
+  PLAYER1,
+  PLAYER2,
+  NONE
+}
+
 export enum Symbol {
   FISH,
   FAN,
@@ -35,10 +41,14 @@ export class Kamon extends defineHex({dimensions: HEX_RADIUS, origin:
                                       {x: -DUMMY_HEX.width / 2, y: -DUMMY_HEX.height / 2}, orientation: Orientation.FLAT}) {
   colour: Colour;
   symbol: Symbol;
-  static create(config: AxialCoordinates & {colour: Colour, symbol: Symbol}) {
+  selected: Selection;
+  last_selected: boolean;
+  static create(config: AxialCoordinates & {colour: Colour, symbol: Symbol, selected?: Selection, last_selected?: boolean}) {
     const tile = new Kamon(config);
     tile.colour = config.colour;
     tile.symbol = config.symbol;
+    tile.selected = config.selected ? config.selected : Selection.NONE;
+    tile.last_selected = config.last_selected || false;
     return tile
   }
 }

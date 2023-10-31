@@ -1,10 +1,12 @@
 import { defineHex, Grid, Hex, ring} from 'honeycomb-grid'
-import { Kamon, TILES, Symbol, Colour, DUMMY_HEX } from './tiles';
+import { Kamon, TILES, Symbol, Colour, DUMMY_HEX, Selection } from './tiles';
 
 class DrawingApp {
   
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
+  curSelection: Selection;
+  lastSelection: Kamon;
   grid: Grid<Kamon>;
 
   constructor () {
@@ -12,21 +14,31 @@ class DrawingApp {
     this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.createUserEvents();
     this.grid = new Grid(Kamon, TILES);
+    this.curSelection = Selection.PLAYER1;
+    this.lastSelection = null;
     this.redraw();
   }
 
 
   private pressEventHandler = (event: MouseEvent) => {
-    let ex = event.clientX;
-    let ey = event.clientY;
-    let cx = this.canvas.offsetLeft;
-    let cy = this.canvas.offsetTop;
-    this.canvasClickHandler(event, [ex - cx, ey - cy]);
+    let ex = event.pageX;
+    let ey = event.pageY;
+    let cx = this.canvas.offsetLeft + this.canvas.width / 2 - DUMMY_HEX.width / 2;
+    let cy = this.canvas.offsetTop + this.canvas.height / 2 - DUMMY_HEX.height / 2;
+    this.canvasClickHandler(event, {x: ex - cx, y: ey - cy});
   }
 
-  private canvasClickHandler(event: MouseEvent, pt: [number, number]) {
-    console.log(`Clicked at ${pt} in canvas coordinates`);
-
+  private canvasClickHandler(event: MouseEvent, pt: Point) {
+    console.log(`Clicked at ${pt.x}, ${pt.y} in canvas coordinates`);
+    var hex = this.grid.pointToHex(pt);
+    hex.selected = this.curSelection;
+    this.curSelection = this.curSelection == Selection.PLAYER1 ? Selection.PLAYER2 : Selection.PLAYER1;
+    if (this.lastSelection) {
+      this.lastSelection.last_selected = false;
+    }
+    hex.last_selected = true;
+    this.lastSelection = hex;
+    this.redraw();
   }
 
   private createUserEvents() {
@@ -35,14 +47,13 @@ class DrawingApp {
   }
 
   private redraw() { 
-    this.context.fillStyle = "#000000";
     this.context.save();
     var transX = this.canvas.width * 0.5,
         transY = this.canvas.height * 0.5;
-    const first = DUMMY_HEX;
-    this.context.translate(transX, transY);
+    this.context.translate(transX - DUMMY_HEX.width / 2, transY - DUMMY_HEX.height / 2);
+    this.context.fillStyle = "#000000";
     this.grid.forEach((kamon) => {
-      // this.context.save();
+      this.context.save();
       // this.context.translate(kamon.center.x, kamon.center.y);
       this.context.strokeStyle = kamon.colour;
       this.context.beginPath();
@@ -55,10 +66,28 @@ class DrawingApp {
       });
       this.context.closePath();
       this.context.fill();
-      // this.context.restore();
+      this.context.lineWidth = 3;
+      if (kamon.last_selected) {
+        this.context.strokeStyle = '#D4AF37';
+        this.context.stroke();
+      } else {
+        switch (kamon.selected) {
+          case Selection.PLAYER1:
+            this.context.strokeStyle = '#FFFFFF';
+            this.context.stroke();
+            break;
+          case Selection.PLAYER2:
+            this.context.strokeStyle = '#000000';
+            this.context.stroke();
+            break;
+          default:
+        }
+      }
+      this.context.restore();
       this.render_symbol(kamon);
     });
     this.context.restore();
+    // this.context.fillRect(transX -5, transY -5, 10, 10);
   }
 
   private render_symbol(kamon: Kamon) {
