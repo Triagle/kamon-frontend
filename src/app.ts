@@ -1,21 +1,18 @@
-import { defineHex, Grid, Hex, ring} from 'honeycomb-grid'
+import {Point} from 'honeycomb-grid'
+import {KamonGame} from './controller';
 import { Kamon, TILES, Symbol, Colour, DUMMY_HEX, Selection } from './tiles';
 
 class DrawingApp {
   
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
-  curSelection: Selection;
-  lastSelection: Kamon;
-  grid: Grid<Kamon>;
+  game: KamonGame;
 
   constructor () {
     this.canvas = document.getElementById("kamoncanvas") as HTMLCanvasElement;
     this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.createUserEvents();
-    this.grid = new Grid(Kamon, TILES);
-    this.curSelection = Selection.PLAYER1;
-    this.lastSelection = null;
+    this.game = new KamonGame();
     this.redraw();
   }
 
@@ -30,15 +27,16 @@ class DrawingApp {
 
   private canvasClickHandler(event: MouseEvent, pt: Point) {
     console.log(`Clicked at ${pt.x}, ${pt.y} in canvas coordinates`);
-    var hex = this.grid.pointToHex(pt);
-    hex.selected = this.curSelection;
-    this.curSelection = this.curSelection == Selection.PLAYER1 ? Selection.PLAYER2 : Selection.PLAYER1;
-    if (this.lastSelection) {
-      this.lastSelection.last_selected = false;
+    var hex = this.game.grid.pointToHex(pt, {allowOutside: false});
+    if (hex === undefined) {
+      return;
     }
-    hex.last_selected = true;
-    this.lastSelection = hex;
+    let placed = this.game.placeSelection(hex);
+    console.log(Object.getOwnPropertyNames(this.game.grid));
     this.redraw();
+    if (placed && this.game.currentPlayerWins()) {
+      alert(`Player ${this.game.curSelection} wins!`);
+    }
   }
 
   private createUserEvents() {
@@ -50,9 +48,11 @@ class DrawingApp {
     this.context.save();
     var transX = this.canvas.width * 0.5,
         transY = this.canvas.height * 0.5;
+    this.context.fillStyle = '#564256';
+    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.translate(transX - DUMMY_HEX.width / 2, transY - DUMMY_HEX.height / 2);
     this.context.fillStyle = "#000000";
-    this.grid.forEach((kamon) => {
+    this.game.grid.forEach((kamon) => {
       this.context.save();
       // this.context.translate(kamon.center.x, kamon.center.y);
       this.context.strokeStyle = kamon.colour;
@@ -66,28 +66,37 @@ class DrawingApp {
       });
       this.context.closePath();
       this.context.fill();
-      this.context.lineWidth = 3;
-      if (kamon.last_selected) {
+      if (this.game.lastSelection === kamon) {
+        this.context.lineWidth = 5;
         this.context.strokeStyle = '#D4AF37';
         this.context.stroke();
-      } else {
-        switch (kamon.selected) {
-          case Selection.PLAYER1:
-            this.context.strokeStyle = '#FFFFFF';
-            this.context.stroke();
-            break;
-          case Selection.PLAYER2:
-            this.context.strokeStyle = '#000000';
-            this.context.stroke();
-            break;
-          default:
-        }
       }
+      this.context.lineWidth = 3;
+      switch (kamon.selected) {
+        case Selection.PLAYER1:
+          this.addPlayerBadge(kamon, '#FFFFFF');
+          break;
+        case Selection.PLAYER2:
+          this.addPlayerBadge(kamon, '#000000');
+          break;
+        default:
+      }
+
       this.context.restore();
       this.render_symbol(kamon);
     });
     this.context.restore();
     // this.context.fillRect(transX -5, transY -5, 10, 10);
+  }
+
+  private addPlayerBadge(kamon: Kamon, colour: string) {
+    this.context.save();
+    this.context.beginPath();
+    this.context.strokeStyle = colour;
+    this.context.translate(-kamon.center.x - kamon.origin.x, -(kamon.center.y + kamon.origin.y));
+    this.context.arc(0, 0, kamon.height / 2 - 2, 0, 2 * Math.PI);
+    this.context.stroke()
+    this.context.restore();
   }
 
   private render_symbol(kamon: Kamon) {
@@ -111,7 +120,6 @@ class DrawingApp {
         this.context.stroke();
         break;
         case Symbol.FAN:
-        console.log(kamon.colour);
         this.context.arc(0, unit/4, 0.6 * unit, -5*Math.PI/6, -Math.PI/6);
         this.context.stroke();
         this.context.moveTo(0, unit/4);
