@@ -7,13 +7,13 @@ import {
 } from 'honeycomb-grid';
 
 export enum Colour {
-  RED = '#FF6F59',
+  BLANK = '#000000',
   BLUE = '#AEC5EB',
-  ORANGE = '#FDCA40',
-  YELLOW = '#F2E863',
   GREEN = '#00FF00',
+  ORANGE = '#FDCA40',
   PINK = '#DC6ACF',
-  BLANK = '#000000'
+  RED = '#FF6F59',
+  YELLOW = '#F2E863'
 }
 
 export enum Selection {
@@ -23,13 +23,13 @@ export enum Selection {
 }
 
 export enum Symbol {
-  FISH,
-  FAN,
-  BUTTERFLY,
-  MOUNTAIN,
-  GATE,
   BIRD,
-  BLANK
+  BLANK,
+  BUTTERFLY,
+  FAN,
+  FISH,
+  GATE,
+  MOUNTAIN
 }
 
 const HEX_RADIUS = 50;
