@@ -7,7 +7,7 @@ import {
 } from 'honeycomb-grid';
 
 export enum Colour {
-  BLANK = '#000000',
+  BLACK = '#000000',
   BLUE = '#AEC5EB',
   GREEN = '#00FF00',
   ORANGE = '#FDCA40',
@@ -112,7 +112,7 @@ export function randomTileDistrubition(): Kamon[] {
       i++;
     }
   }
-  tiles.push(Kamon.create({q: 0, r: 0, colour: Colour.BLANK, symbol: Symbol.BLANK}))
+  tiles.push(Kamon.create({q: 0, r: 0, colour: Colour.BLACK, symbol: Symbol.BLANK}))
 
   return tiles;
 }
