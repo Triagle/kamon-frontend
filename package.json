@@ -4,6 +4,6 @@
     "parcel": "^2.10.1"
   },
   "dependencies": {
-    "honeycomb-grid": "^4.1.4"
+    "honeycomb-grid": "^4.1.4",
   }
 }

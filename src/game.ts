@@ -1,4 +1,4 @@
-import { Selection, Kamon, randomTileDistrubition } from './tiles';
+import { Selection, Kamon } from './tiles';
 import { Grid, Direction, AxialCoordinates } from 'honeycomb-grid';
 
 const NW_BOUNDS: AxialCoordinates[] = [{ q: -3, r: 0 }, { q: -2, r: -1 }, { q: -1, r: -2 }, { q: 0, r: -3 }];
@@ -8,19 +8,21 @@ const SE_BOUNDS: AxialCoordinates[] = [{ q: 0, r: 3 }, { q: 1, r: 2 }, { q: 2, r
 const E_BOUNDS: AxialCoordinates[] = [{ q: -3, r: 0 }, { q: -3, r: 1 }, { q: -3, r: 2 }, { q: -3, r: 3 }];
 const W_BOUNDS: AxialCoordinates[] = [{ q: 3, r: -3 }, { q: 3, r: -2 }, { q: 3, r: -1 }, { q: 3, r: 0 }];
 
+type GridUpdateHandler = (grid: Grid<Kamon>, coords: AxialCoordinates) => void;
 export class KamonGame {
     lastCoords: AxialCoordinates;
     _grid: Grid<Kamon>;
-    gridUpdateHandler: (grid: Grid<Kamon>, coords: AxialCoordinates) => void;
+    private gridUpdateHandlers: GridUpdateHandler[];
 
     constructor(grid: Grid<Kamon>) {
         this._grid = grid;
         this.lastCoords = null;
+        this.gridUpdateHandlers = [];
     }
 
     get curSelection() {
         if (this.lastCoords === null) {
-            return Selection.PLAYER1;
+            return Selection.NONE;
         }
         return this.lastSelection.selected;
     }
@@ -42,15 +44,29 @@ export class KamonGame {
 
     set grid(grid: Grid<Kamon>) {
         this._grid = grid;
-        this.gridUpdateHandler(this._grid, this.lastCoords);
+        this.gridUpdateHandlers.forEach(f => f(this._grid, this.lastCoords));
     }
-
+    gridFromJson(lastCoords: any, grid: any) {
+        this.lastCoords = lastCoords as AxialCoordinates;
+        var kamons = [];
+        for (let kamon of grid.coordinates) {
+            let nk = Kamon.create(kamon);
+            console.log(nk);
+            console.log(nk.selected);
+            kamons.push(nk);
+        }
+        this._grid = new Grid<Kamon>(Kamon, kamons);
+        this.gridUpdateHandlers.forEach(f => f(this._grid, this.lastCoords));
+    }
+    addGridUpdateHandler(handler: GridUpdateHandler) {
+        this.gridUpdateHandlers.push(handler);
+    }
     // place a kamon with the current selection (if possible) and advance the current selection
     // returns true if the game state updated
     placeSelection(player: Selection, kamon: Kamon) {
         kamon.selected = player;
         this.lastSelection = kamon;
-        this.gridUpdateHandler(this._grid, this.lastCoords);
+        this.gridUpdateHandlers.forEach(f => {f(this._grid, this.lastCoords)});
     }
 
     canPlaceSelection(kamon: Kamon) {

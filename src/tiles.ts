@@ -43,11 +43,11 @@ export class Kamon extends defineHex({dimensions: HEX_RADIUS, origin:
   colour: Colour;
   symbol: Symbol;
   selected: Selection;
-  static create(config: AxialCoordinates & {colour: Colour, symbol: Symbol, selected?: Selection, last_selected?: boolean}) {
+  static create(config: AxialCoordinates & {colour: Colour, symbol: Symbol, selected: Selection, last_selected?: boolean}) {
     const tile = new Kamon(config);
     tile.colour = config.colour;
     tile.symbol = config.symbol;
-    tile.selected = config.selected ? config.selected : Selection.NONE;
+    tile.selected = config.selected !== null && config.selected !== undefined ? config.selected : Selection.NONE;
     return tile
   }
 }
