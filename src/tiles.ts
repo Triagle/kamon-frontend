@@ -2,6 +2,7 @@ import {
   defineHex,
   Hex,
   AxialCoordinates,
+  Grid,
   Orientation,
   Point
 } from 'honeycomb-grid';
@@ -98,7 +99,7 @@ function shuffleArray<T>(array: T[]) {
     }
 }
 
-export function randomTileDistrubition(): Kamon[] {
+export function randomTileDistrubition(): Grid<Kamon> {
   var tileCopy = JSON.parse(JSON.stringify(COLOUR_SYMBOL_PAIRS));
   shuffleArray(tileCopy);
   var tiles: Kamon[] = [];
@@ -114,6 +115,6 @@ export function randomTileDistrubition(): Kamon[] {
   }
   tiles.push(Kamon.create({q: 0, r: 0, colour: Colour.BLACK, symbol: Symbol.BLANK}))
 
-  return tiles;
+  return new Grid<Kamon>(Kamon, tiles);
 }
 
