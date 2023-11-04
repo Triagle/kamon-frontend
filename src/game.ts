@@ -160,8 +160,19 @@ export class KamonGame {
         return false;
     }
 
+    otherPlayerUnableToMove(player: Selection): boolean {
+        if (this.lastCoords === null || this.lastCoords === undefined) {
+            return false;
+        }
+        let kamon = this.lastSelection;
+        if (kamon.selected !== player) {
+            return false;
+        }
+        return this._grid.every(kamon => !this.canPlaceSelection(kamon));
+    }
+
     currentPlayerWins(player: Selection): boolean {
-        return this.playerWinsOnSurround(player) || this.playerWinsOnBoundaries(player);
+        return this.playerWinsOnSurround(player) || this.playerWinsOnBoundaries(player) || this.otherPlayerUnableToMove(player);
 
     }
 }
