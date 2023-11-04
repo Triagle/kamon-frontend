@@ -129,16 +129,14 @@ export class KamonGame {
         return found;
     }
 
-    playerWinsOnBoundaries(): boolean {
-        let other = this.otherPlayer();
-        return this.canReach(Array.from(this.getBoundary(Direction.NW)), this.getBoundary(Direction.SE), other)
-            || this.canReach(Array.from(this.getBoundary(Direction.NE)), this.getBoundary(Direction.SW), other)
-            || this.canReach(Array.from(this.getBoundary(Direction.E)), this.getBoundary(Direction.W), other);
+    playerWinsOnBoundaries(player: Selection): boolean {
+        return this.canReach(Array.from(this.getBoundary(Direction.NW)), this.getBoundary(Direction.SE), player)
+            || this.canReach(Array.from(this.getBoundary(Direction.NE)), this.getBoundary(Direction.SW), player)
+            || this.canReach(Array.from(this.getBoundary(Direction.E)), this.getBoundary(Direction.W), player);
     }
 
-    playerWinsOnSurround(): boolean {
-        const allowedOccupation = new Set([Selection.NONE,
-                                           this.curSelection]);
+    playerWinsOnSurround(player: Selection): boolean {
+        const allowedOccupation = new Set([Selection.NONE, this.otherPlayer(player)]);
         const boundary = new Set([...this.getBoundary(Direction.NW),
                                  ...this.getBoundary(Direction.NE),
                                  ...this.getBoundary(Direction.E),
@@ -162,8 +160,8 @@ export class KamonGame {
         return false;
     }
 
-    currentPlayerWins(): boolean {
-        return this.playerWinsOnSurround() || this.playerWinsOnBoundaries();
+    currentPlayerWins(player: Selection): boolean {
+        return this.playerWinsOnSurround(player) || this.playerWinsOnBoundaries(player);
 
     }
 }

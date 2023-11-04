@@ -32,10 +32,6 @@ export class KamonController {
 
     private handleCanvasClickEvent(pt: Point) {
         var hex = this.model.grid.pointToHex(pt, {allowOutside: false});
-        console.log(this.player);
-        console.log(this.model.curSelection);
-        console.log(hex)
-        console.log(this.model.canPlaceSelection(hex));
         if (hex === undefined || this.model.curSelection == this.player || !this.model.canPlaceSelection(hex)) {
             return;
         }
@@ -47,12 +43,10 @@ export class KamonController {
     }
 
     private testWinConditions() {
-        console.log(this.model.currentPlayerWins(this.player))
-        console.log(this.model.currentPlayerWins(this.model.otherPlayer(this.player)))
         if (this.model.currentPlayerWins(this.player)) {
-            this.view.handleWinEvent(this.model.otherPlayer(this.player));
-        } else if (this.model.currentPlayerWins(this.model.otherPlayer(this.player))) {
             this.view.handleWinEvent(this.player);
+        } else if (this.model.currentPlayerWins(this.model.otherPlayer(this.player))) {
+            this.view.handleWinEvent(this.model.otherPlayer(this.player));
         }
     }
 
