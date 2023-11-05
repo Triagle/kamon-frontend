@@ -1,0 +1,22 @@
+:PROPERTIES:
+:ID:       0c49accd-2326-4279-9805-2fded2ae7d9d
+:END:
+#+title: Kamon Online - Frontend
+
+This project is an implementation of the [[https://www.cosmoludo.com/kamon-en][Kamon board game]] in the browser. The game is played by two players on different devices. It is intended to be deployed with the [[With a shell in ][accompanying backend]]. The frontend is written in typescript, but without any framework.
+
+[[file:kamon.png]]
+* Deployment
+This project is easily deployed with [[https://parceljs.org/][Parcel]]. From the project root execute
+#+begin_src shell
+npx parcel build --dist-dir $DEST_DIR --public-url /static src/index.html
+#+end_src
+The destination directory is the static folder for the backend.
+* Rules
+The rules of Kamon are simple. White begins by choosing any tile (a "kamon") on the board besides the black blank tile. There are 36 kamons with one of six symbols and colours. There is exactly one playable kamon for each of the 36 symbol-colour pairs. This kamon is then selected by white, and this is shown by a white circle on the kamon, and the gold border to indicate this is the most recently chosen kamon. Black may respond by choosing any kamon that has either the same colour or the same symbol as the kamon white just selected. Play continues with each player selecting a kamon with either the same colour or symbol as the last selected kamon, until someone wins. There are three winning conditions:
+
+1. A player connects two opposite sides of the board.
+2. A player surrounds a region containing at least one blank kamon, or at least one kamon of the opposing player.
+3. A player immediately wins if the opponent is unable to make a valid move.
+
+To start a new game, simply click "Host" again.
