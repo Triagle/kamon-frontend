@@ -153,8 +153,18 @@ export class KamonView {
         this.context.restore();
     }
 
-    handleWinEvent(player: Selection) {
-        let playerString = player == Selection.PLAYER1 ? 'White' : 'Black';
-        alert(`${playerString} wins!`);
+    handleWinEvent(playerWins: boolean) {
+        let playerWinText = playerWins ? 'win' : 'lose';
+        let winConditionBanner = document.getElementById('win-condition');
+
+        winConditionBanner.textContent = `You ${playerWinText}!`;
+        winConditionBanner.style.display = 'block';
+        let colourIndicator = document.getElementById('colour-indicator');
+        colourIndicator.style.display = 'none';
+        winConditionBanner.scrollIntoView({
+            behavior: 'auto',
+            block: 'center',
+            inline: 'center'
+        })
     }
 }

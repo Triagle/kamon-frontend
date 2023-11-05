@@ -1,18 +1,39 @@
-
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>My First Parcel App</title>
+    <title>Kamon</title>
     <link rel="stylesheet" href="styles.scss" />
     <script type="module" src="app.ts"></script>
   </head>
   <body>
-    <input id="room" type="text" placeholder="room code"/>
-    <button id="host">Host</button>
-    <button id="join">Join</button>
+    <div id="room-header">
+      <input id="room" type="text" placeholder="Enter room code to begin!"/>
+      <button id="host">Host</button>
+      <button id="join">Join</button>
+    </div>
+   <div id="explainer">
+      <h2>Kamon Online</h2>
+      <p>Kamon is a <a href="https://www.cosmoludo.com/kamon-en">two-player board game</a> which combines elements of area control (like Go) but in a simple and attractive package. This is an online implementation of Kamon that allows two players to play against each other over the internet.
+        To create a game, type in a room code (this can be anything) and click "Host". This room code can be given to the other player, who types this in and clicks "Join". Please read the rules to get an idea of how the game works.
+      </p>
+      <h3>Rules</h3>
+      <p>The rules of Kamon are simple. White begins by choosing any tile (a "kamon") on the board. Black may respond by choosing any kamon that has either the same colour or the same symbol. There are three winning conditions:
+        <ol>
+          <li>A player connects two opposite sides of the board.</li>
+          <li>A player surrounds a region containing at least one blank kamon, or at least one kamon of the opposing player.</li>
+          <li>A player immediately wins if an opponent is unable to make a valid move.</li>
+        </ol>
+        To start a new game, simply click "Host" again.
+      </p>
+    </div>
+    <h1 id="colour-indicator">Your colour is: <span id="player-colour">White</span></h1>
+    <div id="win-container">
+      <h1 id="win-condition"></h1>
+    </div>
     <div class="container">
       <canvas id="kamoncanvas" width="1000px" height="1000px"/>
     </div>
+
   </body>
 </html>

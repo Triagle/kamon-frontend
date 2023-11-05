@@ -24,6 +24,15 @@ export class KamonController {
         this.socketservice.playerJoinsCallback = () => {
             this.socketservice.sendState(this.model);
         };
+        this.setupPlayerHint();
+    }
+
+    setupPlayerHint() {
+        let colourIndicator = document.getElementById('colour-indicator');
+        let playerColour = document.getElementById('player-colour');
+        playerColour.textContent = this.player === Selection.PLAYER1 ? 'White' : 'Black';
+        playerColour.style.color = this.player === Selection.PLAYER1 ? '#ffffff' : '#000000';
+        colourIndicator.style.display = 'block';
     }
 
     initialiseGame(grid: Grid<Kamon>) {
@@ -44,9 +53,9 @@ export class KamonController {
 
     private testWinConditions() {
         if (this.model.currentPlayerWins(this.player)) {
-            this.view.handleWinEvent(this.player);
+            this.view.handleWinEvent(true);
         } else if (this.model.currentPlayerWins(this.model.otherPlayer(this.player))) {
-            this.view.handleWinEvent(this.model.otherPlayer(this.player));
+            this.view.handleWinEvent(false);
         }
     }
 

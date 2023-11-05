@@ -1,6 +1,48 @@
 body {
     background-color: #564256;
+    font-family: 'sans-serif';
 }
+
+input {
+    font-size: 28pt;
+}
+
+button {
+    font-size: 28pt;
+    margin-left: 3em;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+#explainer {
+    color: white;
+}
+
+#explainer a {
+    color: #0f82af;
+    font-weight: bold;
+}
+
+#room-header {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+}
+
+#colour-indicator {
+    display: none;
+    color: white;
+}
+
+#win-condition {
+    display: none;
+    color: white;
+}
+#win-container {
+    display: flex;
+    justify-content: center;
+}
+
 .container {
     height: 100%;
     display: flex;

@@ -168,11 +168,15 @@ export class KamonGame {
         if (kamon.selected !== player) {
             return false;
         }
-        return this._grid.every(kamon => !this.canPlaceSelection(kamon));
+        for (let kamon of this._grid) {
+            if (this.canPlaceSelection(kamon)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     currentPlayerWins(player: Selection): boolean {
         return this.playerWinsOnSurround(player) || this.playerWinsOnBoundaries(player) || this.otherPlayerUnableToMove(player);
-
     }
 }
