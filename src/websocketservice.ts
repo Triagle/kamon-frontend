@@ -1,6 +1,5 @@
 import { KamonGame } from './game';
-const API_ROOT = 'ws://localhost:8080/';
-
+const API_ROOT = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/ws";
 
 export class KamonWebSocketService {
     room_id: string;
