@@ -3,7 +3,7 @@
 :END:
 #+title: Kamon Online - Frontend
 
-This project is an implementation of the [[https://www.cosmoludo.com/kamon-en][Kamon board game]] in the browser. The game is played by two players on different devices. It is intended to be deployed with the [[With a shell in ][accompanying backend]]. The frontend is written in typescript, but without any framework.
+This project is an implementation of the [[https://www.cosmoludo.com/kamon-en][Kamon board game]] in the browser. The game is played by two players on different devices. It is intended to be deployed with the [[https://github.com/lispandfound/kamon_backend][accompanying backend]]. The frontend is written in typescript, but without any framework.
 
 [[file:kamon.png]]
 * Deployment
